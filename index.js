@@ -1,10 +1,14 @@
 const { response } = require('express')
 const express = require('express')
 const morgan = require('morgan')
+const cors = require('cors')
+
 const app = express()
 
+app.use(express.static('build'))
 app.use(express.json())
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :posted'))
+app.use(cors())
 
 morgan.token('posted', function(req, res) {
     return JSON.stringify(req.body)
@@ -32,10 +36,6 @@ let persons = [
         "id": 4
     }
 ]
-
-app.get('/', (req, res) => {
-    res.send('<h1>hello world</h1>')
-})
 
 app.get('/info', (req, res) => {
     const date = new Date()
@@ -98,7 +98,7 @@ const generateId = () => {
     return maxId + 1
 }
 
-const PORT = 3001
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })
